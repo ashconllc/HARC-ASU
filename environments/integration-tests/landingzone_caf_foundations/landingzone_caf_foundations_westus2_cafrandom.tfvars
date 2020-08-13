@@ -5,17 +5,17 @@ global_settings = {
   #specifies the set of locations you are going to use in this landing zone
   location_map = {
     region1 = "westus2"
-    region2 = "eastasia"
+    region2 = "westus"
   }
 
   #naming convention to be used as defined in naming convention module, accepted values are cafclassic, cafrandom, random, passthrough
-  convention = "cafrandom"
+  convention = "cafclassic"
 
   #Set of tags for core operations
   tags_hub = {
-    owner          = "CAF"
+    owner          = "KE"
     deploymentType = "Terraform"
-    costCenter     = "1664"
+    costCenter     = "HARC"
     BusinessUnit   = "SHARED"
     DR             = "NON-DR-ENABLED"
   }
@@ -58,7 +58,7 @@ accounting_settings = {
   azure_diagnostics_logs_event_hub = false
 
   #Logging and monitoring 
-  analytics_workspace_name = "caflalogs"
+  analytics_workspace_name = "HPCflalogs"
 
   ##Log analytics solutions to be deployed 
   solution_plan_map = {
@@ -104,7 +104,7 @@ governance_settings = {
     cant_create_ip_spoke   = false
     managed_disks_only     = false
     restrict_locations     = false
-    list_of_allowed_locs   = ["southeastasia", "eastasia"]
+    list_of_allowed_locs   = ["westus2", "westus"]
     restrict_supported_svc = false
     list_of_supported_svc  = ["Microsoft.Network/publicIPAddresses", "Microsoft.Compute/disks"]
     msi_location           = "southeastasia"

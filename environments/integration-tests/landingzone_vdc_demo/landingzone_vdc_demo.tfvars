@@ -1,8 +1,8 @@
 # settings for the shared network blueprint 
 resource_groups_shared_services = {
   HUB-CORE-NET = {
-    name     = "-hub-network-shared"
-    location = "southeastasia"
+    name     = "rg-hub-network-shared"
+    location = "westus2"
   }
 }
 
@@ -11,7 +11,7 @@ ddos_name            = "ddos_protection_plan"
 
 shared_services_vnet = {
   vnet = {
-    name          = "Shared-Services"
+    name          = "vnet-Shared-Services"
     address_space = ["10.101.4.0/22"]
     dns           = []
   }
@@ -19,16 +19,16 @@ shared_services_vnet = {
   }
   subnets = {
     subnet0 = {
-      name              = "Critical_Applications"
+      name              = "sn-HPCstorage"
       cidr              = ["10.101.4.0/25"]
-      nsg_name          = "Critical_Applications_nsg"
+      nsg_name          = "HPCstorage_nsg"
       service_endpoints = []
     }
     subnet1 = {
-      name              = "Active_Directory"
+      name              = "sn-HPCcompute"
       cidr              = ["10.101.4.128/27"]
       service_endpoints = []
-      nsg_name          = "Active_Directory_nsg"
+      nsg_name          = "HPCCompute_nsg"
       nsg = [
         {
           name                       = "W32Time",
@@ -154,19 +154,19 @@ shared_services_vnet = {
       ]
     }
     subnet2 = {
-      name              = "SQL_Servers"
+      name              = "sn-HPCmgmt"
       cidr              = ["10.101.4.160/27"]
       service_endpoints = []
-      nsg_name          = "Data_tier_nsg"
+      nsg_name          = "HPCmgmt_nsg"
       nsg = [
         {
-          name                       = "TDS-In",
+          name                       = "SSH-In",
           priority                   = "100"
           direction                  = "Inbound"
           access                     = "Allow"
-          protocol                   = "UDP"
+          protocol                   = "TCP"
           source_port_range          = "*"
-          destination_port_range     = "1433"
+          destination_port_range     = "443"
           source_address_prefix      = "*"
           destination_address_prefix = "*"
         }
@@ -272,7 +272,7 @@ bastion_config = {
       #    ["AllMetrics", true, true, 30],
     ]
   }
-  ip_name = "caf-pip-bastion"
+  ip_name = "HPC-pip-bastion"
   ip_addr = {
     allocation_method = "Static"
     #Dynamic Public IP Addresses aren't allocated until they're assigned to a resource (such as a Virtual Machine or a Load Balancer) by design within Azure 
@@ -304,15 +304,15 @@ bastion_config = {
 # settings for the shared egress blueprint 
 resource_groups_shared_egress = {
   HUB-EGRESS-NET = {
-    name     = "-hub-network-egress"
-    location = "southeastasia"
+    name     = "rg-hub-network-egress"
+    location = "westus2"
   }
 }
 
 # Settings for the shared services egress vnet - note that Azure Firewall subnet must be at least /26 
 networking_egress = {
   vnet = {
-    name          = "Shared-Egress"
+    name          = "vnet-Shared-Egress"
     address_space = ["10.0.0.0/25"]
     dns           = ["192.168.0.16", "192.168.0.64"]
   }
@@ -325,7 +325,7 @@ networking_egress = {
   }
   subnets = {
     subnet1 = {
-      name     = "Network_Monitoring"
+      name     = "sn-Network_Monitoring"
       cidr     = ["10.0.0.64/26"]
       nsg_name = "Network_Monitoring_nsg"
     }
@@ -345,7 +345,7 @@ networking_egress = {
 # Settings for the public IP address to be used for egress
 # Must be standard and static for Azure Firewall 
 ip_addr_config = {
-  ip_name           = "caf-pip-egress"
+  ip_name           = "HPC-pip-egress"
   allocation_method = "Static"
   #Dynamic Public IP Addresses aren't allocated until they're assigned to a resource (such as a Virtual Machine or a Load Balancer) by design within Azure 
 
@@ -373,7 +373,7 @@ ip_addr_config = {
 
 # Settings for the Azure Firewall settings
 az_fw_config = {
-  name = "az-fw-caf"
+  name = "az-fw-hpc"
   diagnostics = {
     log = [
       #["Category name",  "Diagnostics Enabled(true/false)", "Retention Enabled(true/false)", Retention_period] 
@@ -400,15 +400,15 @@ udr_object = {
 #resource group creation
 resource_groups_shared_transit = {
   HUB-NET-TRANSIT = {
-    name     = "-hub-network-transit"
-    location = "southeastasia"
+    name     = "rg-hub-network-transit"
+    location = "westus2"
   }
 }
 
 # Settings for the shared services egress vnet
 networking_transit = {
   vnet = {
-    name          = "Shared-Transit"
+    name          = "vnet-Shared-Transit"
     address_space = ["172.16.0.0/23"]
     dns           = ["192.168.0.16", "192.168.0.64"]
   }
@@ -421,7 +421,7 @@ networking_transit = {
   }
   subnets = {
     subnet1 = {
-      name              = "NetworkMonitoring"
+      name              = "sn-NetworkMonitoring"
       cidr              = ["172.16.1.0/24"]
       nsg_name          = "NetworkMonitoring_msg"
       service_endpoints = []
@@ -441,11 +441,11 @@ networking_transit = {
 
 # Settings for the public IP address to be used for egress
 public_ip_addr = {
-  name              = "caf-pip-vpn"
+  name              = "hpc-pip-vpn"
   allocation_method = "Dynamic"
   sku               = "Basic"
   #For basic SKU, you can pick the zone to be deployed - if you want multi zone - pick Standard IP and pick AZ aware VPN gateway SKU
-  #dns_prefix        = "arnaudvpn"
+  #dns_prefix        = "asu"
   #zones             = ["1"]
   diagnostics = {
     log = [
@@ -497,7 +497,7 @@ connection_name        = "onpremconnection"
 remote_network_connect = true
 
 remote_network = {
-  gateway_name         = "caf_local_network"
+  gateway_name         = "hpc_local_network"
   gateway_ip           = "1.2.3.4"
   gateway_adress_space = ["1.0.0.0/8"]
 }
