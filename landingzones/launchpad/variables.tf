@@ -19,7 +19,7 @@ variable level {
 }
 
 variable convention {
-  default = "cafrandom"
+  default = "cafclassic"
 
   validation {
     condition     = contains(["cafrandom", "random", "passthrough", "cafclassic"], var.convention)
@@ -28,7 +28,7 @@ variable convention {
 }
 
 variable location {
-  default = "southeastasia"
+  default = "westus2"
 }
 
 variable prefix {
